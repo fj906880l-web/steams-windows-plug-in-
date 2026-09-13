@@ -6,7 +6,7 @@
 [![Hardware Decoders](https://img.shields.io/badge/Hardware%20Accel-VA--API%20radeonsi-blueviolet?style=for-the-badge)](#features)
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
 
-An all-in-one integration suite for **SteamOS (Steam Deck LCD & OLED)** and Linux gaming handhelds that directly embeds cloud gaming platforms into **Steam Game Mode**. Seamlessly launch and play Windows titles with restrictive kernel anti-cheat systems—such as **Destiny 2 (BattlEye)**, **Fortnite (Easy Anti-Cheat)**, and **Call of Duty: Warzone (Ricochet)**—without risking account bans or operating system instability.
+An all-in-one integration suite for **SteamOS (Steam Deck LCD & OLED)**, **SteamOS on PC** (Bazzite, ChimeraOS, HoloISO, Arch/Fedora Linux PCs), and gaming handhelds that directly embeds cloud gaming and remote streaming into **Steam Game Mode**. Seamlessly launch and play **any Windows game**—including titles with restrictive kernel anti-cheat systems like **Destiny 2 (BattlEye)**, **Fortnite (Easy Anti-Cheat)**, and **Call of Duty: Warzone (Ricochet)**—without risking account bans, OS hiccups, or input lag.
 
 ---
 
@@ -15,10 +15,10 @@ An all-in-one integration suite for **SteamOS (Steam Deck LCD & OLED)** and Linu
 ### System Architecture & Anti-Cheat Routing
 ![CloudDeck System Architecture](assets/diagrams/architecture_flow.svg)
 
-### Steam Deck Game Mode Quick Access Menu (Decky Plugin)
+### Steam Deck & PC Game Mode Quick Access Menu (Decky Plugin)
 ![Decky Loader UI Mockup](assets/diagrams/game_mode_ui_mockup.svg)
 
-### Steam Deck Neptune Controller Mapping
+### Controller & Handheld Mapping (Neptune / Xbox / DualSense)
 ![Steam Controller Layout](assets/diagrams/controller_layout.svg)
 
 ---
@@ -27,30 +27,32 @@ An all-in-one integration suite for **SteamOS (Steam Deck LCD & OLED)** and Linu
 
 | Execution Method | Anti-Cheat Engine | Ban Risk | Status | Technical Explanation |
 |---|---|---|---|---|
-| **Local Proton / Wine** | BattlEye / EAC / Ricochet | 🔴 **HIGH / IMMEDIATE BAN** | **PROHIBITED** | Bungie explicitly prohibits running Destiny 2 through Proton; kernel hooks fail or trigger automated account suspensions. |
-| **CloudDeck Remote Stream** | Genuine Windows Host | 🟢 **ZERO BAN RISK** | **100% COMPLIANT** | The game client and BattlEye engine execute inside authorized Windows cloud datacenters (NVIDIA GeForce NOW, Xbox Cloud, Boosteroid, Shadow). The Steam Deck acts strictly as an authorized low-latency video and HID controller client. |
+| **Local Proton / Wine** | BattlEye / EAC / Ricochet | 🔴 **HIGH / IMMEDIATE BAN** | **PROHIBITED** | Bungie and publishers explicitly ban or block games like Destiny 2 on Proton; kernel hooks fail or trigger automated suspensions. |
+| **CloudDeck Remote Stream** | Genuine Windows Host | 🟢 **ZERO BAN RISK** | **100% COMPLIANT** | The game client and BattlEye engine execute inside authorized Windows cloud datacenters or your own Windows PC. SteamOS acts strictly as an authorized low-latency video and HID gamepad client. |
 
 ---
 
 ## 🚀 Key Features
 
-* **Instant Non-Steam Game Injection**: Pure Python standalone binary VDF parser (`lib/vdf.py`) that safely reads and injects entries into `shortcuts.vdf` without corrupting Steam's proprietary key-value format.
-* **Complete Artwork Collection**: Automatically installs 20 high-resolution custom Steam capsules, banners, heroes, and logos (`assets/artwork/`) for GeForce NOW, Xbox Cloud Gaming, Boosteroid, Shadow PC, and dedicated Destiny 2 shortcuts.
-* **Hardware-Accelerated Decoding**: Automatically selects VA-API (`radeonsi`) hardware decoding and configures Chromium/Edge flags for sub-5ms display latency on AMD Van Gogh (LCD) and Sephiroth (OLED) APUs.
-* **Decky Loader QAM Plugin**: Dedicated tab in the Steam Deck Quick Access Menu (`...` button) featuring real-time datacenter ping latency monitors, stream bitrate tuning, and one-tap quick-launch shortcuts.
-* **Automatic Gamepad Permissions**: Automatically configures Flatpak udev rules (`/run/udev:ro`) so physical gamepad inputs, analog triggers, and haptic trackpads work seamlessly without manual configuration.
-* **Neptune Steam Controller Profile**: Custom Steam Input mapping featuring trackpad mouse emulation for browser menus, instant F11 fullscreen toggle, virtual keyboard activation, and native gamepad pass-through.
+* **PC & Handheld SteamOS Universal Support**: Built for both the Steam Deck (LCD/OLED) and SteamOS on desktop/laptop PCs (Bazzite, ChimeraOS, HoloISO, Nobara). Automatically scales to 1080p, 1440p, or 4K with high-refresh rate display support.
+* **Play Any Windows Game**: Launch any Windows title by name (`--game "Cyberpunk 2077"`), steam library link, or stream your own Windows gaming PC directly via built-in Moonlight/Sunshine integration.
+* **Zero-Hiccup Hardware Acceleration**: Dynamic GPU auto-detection for **AMD** (`radeonsi`), **Intel** (`iHD`), and **NVIDIA** (`nvidia`/`NVDEC`) with zero-copy Wayland/EGL rasterization for buttery-smooth 60/120 FPS streaming.
+* **Anti-Stutter Performance Pipeline**: Automatically configures browser flags to eliminate background throttling, window occlusion delays, and audio buffer underruns.
+* **Instant Non-Steam Game Injection**: Pure-Python binary VDF parser (`lib/vdf.py`) that safely reads and injects 9 pre-configured shortcuts into `shortcuts.vdf` with CRC32 AppID generation.
+* **28 High-Resolution Artwork Assets**: Complete custom artwork suite (`assets/artwork/`) providing posters, landscape grids, heroes, and logos for every service and game.
+* **Universal Controller udev Permissions**: Automatically configures Flatpak udev rules for all controller hardware—Steam Deck Neptune, Xbox Wireless, Sony DualSense/DS4, Nintendo Switch Pro, and 8BitDo.
 
 ---
 
-## 📦 Supported Cloud Gaming Services
+## 📦 Supported Streaming Services
 
-| Service | Cloud Provider | Hardware Profile | Dedicated Destiny 2 Direct-Launch |
+| Service | Cloud/Host Provider | Target Platform | Dedicated Shortcuts Included |
 |---|---|---|:---:|
-| **GeForce NOW** | NVIDIA | RTX 4080 / Reflex / 120 FPS | ✅ Included |
-| **Xbox Cloud Gaming** | Microsoft | Xbox Series X custom server blades | ✅ Included |
-| **Boosteroid** | Boosteroid | AMD EPYC + Radeon / Ultra 4K | ✅ Included |
-| **Shadow PC** | Shadow | Full remote Windows 10/11 desktop | ✅ Compatible |
+| **GeForce NOW** | NVIDIA | RTX 4080 / Reflex / 120 FPS | ✅ Included (Portal + Destiny 2 + Any Game) |
+| **Xbox Cloud Gaming** | Microsoft | Xbox Series X custom server blades | ✅ Included (Portal + Destiny 2) |
+| **Boosteroid** | Boosteroid | AMD EPYC + Radeon / Ultra 4K | ✅ Included (Portal + Destiny 2) |
+| **Shadow PC** | Shadow | Full remote Windows 10/11 desktop | ✅ Included |
+| **Moonlight** | Local / Remote PC | Your own Windows Gaming Rig (Sunshine) | ✅ Included |
 
 ---
 

@@ -53,4 +53,32 @@ if [[ "${BOOST_OUT}" != *"https://cloud.boosteroid.com/application/518"* ]]; the
 fi
 echo "✓ Passed"
 
+# Test 6: Custom Windows game launch (Any game)
+echo "Test 6: Custom Windows game launch (Any game)"
+CUSTOM_OUT="$("${LAUNCHER}" --dry-run --service gfn --game "Cyberpunk 2077")"
+if [[ "${CUSTOM_OUT}" != *"search?query=Cyberpunk%202077"* ]]; then
+    echo "✗ Failed: Custom game URL encoding mismatch"
+    exit 1
+fi
+echo "✓ Passed"
+
+# Test 7: Custom resolution and zero-stutter flags
+echo "Test 7: Custom resolution and zero-stutter flags"
+RES_OUT="$("${LAUNCHER}" --dry-run --service gfn --resolution 2560x1440)"
+if [[ "${RES_OUT}" != *"--window-size=2560,1440"* ]] || [[ "${RES_OUT}" != *"--disable-background-timer-throttling"* ]]; then
+    echo "✗ Failed: Custom resolution or anti-stutter flags missing"
+    exit 1
+fi
+echo "✓ Passed"
+
+# Test 8: Moonlight Game Streaming
+echo "Test 8: Moonlight Game Streaming"
+MOON_OUT="$("${LAUNCHER}" --dry-run --service moonlight --game "Elden Ring")"
+if [[ "${MOON_OUT}" != *"moonlight://launch?app=Elden%20Ring"* ]]; then
+    echo "✗ Failed: Moonlight app stream URL mismatch"
+    exit 1
+fi
+echo "✓ Passed"
+
 echo "=== All Launcher Tests Passed Successfully ==="
+

@@ -38,10 +38,11 @@ ls -la ~/.local/share/Steam/userdata/ || ls -la ~/.steam/steam/userdata/
 
 | Parameter | Required Specification | Verification Command |
 |---|---|---|
-| **OS** | SteamOS 3.4+ / Bazzite / Arch Linux | `cat /etc/os-release` |
-| **GPU/APU** | AMD Van Gogh (LCD) / Sephiroth (OLED) | `grep "0x1002" /sys/class/drm/renderD128/device/vendor` |
+| **OS** | SteamOS 3.4+ / Bazzite / ChimeraOS / HoloISO / Generic Linux PC | `cat /etc/os-release` |
+| **GPU / APU** | AMD Radeon (radeonsi) / Intel Arc & Xe (iHD) / NVIDIA RTX/GTX (NVDEC) | `lspci -nn \| grep -iE "vga\|3d"` |
+| **Display** | Handheld (1280x800) / PC Monitors (1080p, 1440p, 4K, 60-240Hz) | `xrandr --current \| grep "\*"` |
 | **Flatpak Runtime** | Flatpak 1.12+ with Flathub configured | `flatpak --version` |
-| **Steam Client** | Steam Game Mode (32-bit user ID registered) | `ls ~/.local/share/Steam/userdata` |
+| **Steam Client** | Steam Game Mode or Steam Big Picture (32-bit user ID registered) | `ls ~/.local/share/Steam/userdata` |
 
 ---
 

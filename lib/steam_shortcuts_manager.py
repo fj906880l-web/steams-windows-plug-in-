@@ -69,6 +69,18 @@ ENTRIES_TO_INSTALL = [
         "options": "--service shadow",
         "art_key": "shadow",
         "tags": ["Cloud Desktop", "Shadow PC"]
+    },
+    {
+        "name": "Cloud Deck: Moonlight (Home Windows PC)",
+        "options": "--service moonlight",
+        "art_key": "moonlight",
+        "tags": ["Game Streaming", "Moonlight", "Zero-Latency"]
+    },
+    {
+        "name": "Cloud Deck: Any Windows Game (GeForce NOW)",
+        "options": "--service gfn",
+        "art_key": "custom",
+        "tags": ["Cloud Gaming", "Windows Games", "Anti-Cheat Safe"]
     }
 ]
 

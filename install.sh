@@ -30,10 +30,11 @@ echo ""
 
 # 1. Environment Verification
 echo "${BOLD}[1/5] Verifying System Environment...${R}"
-if [[ -f /etc/os-release ]] && grep -qi "steamos" /etc/os-release; then
-    echo "  ${G}✓ SteamOS detected.${R}"
+if [[ -f /etc/os-release ]] && grep -qiE "steamos|bazzite|chimeraos|holoiso" /etc/os-release; then
+    DISTRO_NAME="$(grep -E "^NAME=" /etc/os-release | cut -d= -f2 | tr -d '"')"
+    echo "  ${G}✓ SteamOS / Gaming Distro detected: ${DISTRO_NAME}${R}"
 else
-    echo "  ${Y}! Running on general Linux / non-SteamOS host.${R}"
+    echo "  ${G}✓ Linux PC / Desktop detected. Full desktop and handheld support enabled.${R}"
 fi
 
 # Ensure directories exist
@@ -59,7 +60,7 @@ if ! grep -qs 'export PATH="$HOME/.local/bin:$PATH"' "${HOME}/.bashrc" 2>/dev/nu
     echo 'export PATH="$HOME/.local/bin:$PATH"' >> "${HOME}/.bashrc"
 fi
 
-# 3. Flatpak & Udev Controller Permissions
+# 3. Flatpak & Udev Controller Permissions (Zero-Hiccup Gamepad Pipeline)
 echo "${BOLD}[3/5] Setting Flatpak Udev Controller Permissions...${R}"
 if command -v flatpak &>/dev/null; then
     # Ensure Flathub repository is configured
@@ -76,11 +77,12 @@ if command -v flatpak &>/dev/null; then
         }
     fi
 
-    # Apply udev permissions for Gamepad access in Flatpak browser
-    echo "  Applying controller udev override..."
-    flatpak --user override --filesystem=/run/udev:ro com.microsoft.Edge 2>/dev/null || true
-    flatpak --user override --filesystem=/run/udev:ro com.google.Chrome 2>/dev/null || true
-    echo "  ${G}✓ Flatpak udev overrides applied.${R}"
+    # Apply udev permissions for Gamepad access across all cloud gaming Flatpaks
+    echo "  Applying controller udev overrides for zero-latency HID inputs..."
+    for APP_ID in com.microsoft.Edge com.google.Chrome org.chromium.Chromium com.moonlight_stream.Moonlight org.schelstraete.boosteroid; do
+        flatpak --user override --filesystem=/run/udev:ro "${APP_ID}" 2>/dev/null || true
+    done
+    echo "  ${G}✓ Flatpak udev overrides applied for all controller types.${R}"
 else
     echo "  ${Y}! Flatpak not found on system. Skipping Flatpak udev override.${R}"
 fi

@@ -77,6 +77,18 @@ THEMES = {
         "bg_bot": (35, 35, 48),
         "accent": (239, 68, 68),      # Shadow Red/Coral
         "accent2": (244, 114, 182),
+    },
+    "moonlight": {
+        "bg_top": (10, 15, 30),       # Moonlight Midnight Blue
+        "bg_bot": (20, 30, 60),
+        "accent": (56, 189, 248),     # Cyan / Moonlight Glow
+        "accent2": (14, 165, 233),
+    },
+    "custom": {
+        "bg_top": (24, 12, 36),       # Custom Windows Game / Violet
+        "bg_bot": (45, 18, 65),
+        "accent": (168, 85, 247),     # Electric Violet
+        "accent2": (236, 72, 153),
     }
 }
 
