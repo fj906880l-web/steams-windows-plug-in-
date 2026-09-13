@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Install CloudDeck
+Comment=Install Cloud Gaming & Destiny 2 Ban-Safe Streaming for SteamOS Game Mode
+Exec=bash -c 'SCRIPT_DIR="$(dirname "%k")"; bash "$SCRIPT_DIR/install.sh"; echo ""; read -p "Press Enter to close..."'
+Icon=applications-games
+Terminal=true
+Type=Application
+Categories=Game;Network;
+StartupNotify=true

@@ -1,0 +1,18 @@
+{
+  "name": "clouddeck-plugin",
+  "version": "1.0.0",
+  "description": "Decky Loader plugin for SteamOS Cloud Gaming & Destiny 2 Anti-Cheat Safe Streaming",
+  "scripts": {
+    "build": "rollup -c",
+    "watch": "rollup -c -w"
+  },
+  "dependencies": {
+    "decky-frontend-lib": "^3.24.0",
+    "react": "^18.2.0",
+    "react-icons": "^4.12.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "typescript": "^5.2.0"
+  }
+}

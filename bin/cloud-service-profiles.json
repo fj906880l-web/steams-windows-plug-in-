@@ -1,0 +1,142 @@
+{
+  "services": {
+    "gfn": {
+      "name": "NVIDIA GeForce NOW",
+      "display_name": "Cloud Deck: GeForce NOW",
+      "category": "Cloud Gaming",
+      "flatpak_id": "com.microsoft.Edge",
+      "fallback_flatpak_id": "com.google.Chrome",
+      "base_url": "https://play.geforcenow.com",
+      "games": {
+        "destiny2": {
+          "title": "Destiny 2",
+          "url": "https://play.geforcenow.com/mall/#/deep-link?game-id=100412811",
+          "anti_cheat": "BattlEye",
+          "anti_cheat_status": "Bypass/Ban-Immune (Certified Windows Host)",
+          "proton_risk": "BANNABLE on native Proton. 100% SAFE via GeForce NOW."
+        },
+        "fortnite": {
+          "title": "Fortnite",
+          "url": "https://play.geforcenow.com/mall/#/deep-link?game-id=100222411",
+          "anti_cheat": "EasyAntiCheat / BattlEye",
+          "anti_cheat_status": "Bypass/Ban-Immune (Certified Windows Host)"
+        },
+        "warzone": {
+          "title": "Call of Duty: Warzone",
+          "url": "https://play.geforcenow.com/mall/#/deep-link?game-id=104323211",
+          "anti_cheat": "Ricochet",
+          "anti_cheat_status": "Bypass/Ban-Immune (Certified Windows Host)"
+        }
+      },
+      "kiosk_args": [
+        "--window-size=1280,800",
+        "--force-device-scale-factor=1.0",
+        "--device-scale-factor=1.0",
+        "--kiosk",
+        "--enable-features=VaapiVideoDecoder,VaapiVideoEncoder",
+        "--enable-gpu-rasterization",
+        "--enable-zero-copy",
+        "--ignore-gpu-blocklist",
+        "--disable-gpu-driver-bug-workarounds",
+        "--no-first-run",
+        "--enable-webrtc-remote-event-log",
+        "--autoplay-policy=no-user-gesture-required"
+      ]
+    },
+    "xbox": {
+      "name": "Xbox Cloud Gaming (xCloud)",
+      "display_name": "Cloud Deck: Xbox Cloud Gaming",
+      "category": "Cloud Gaming",
+      "flatpak_id": "com.microsoft.Edge",
+      "fallback_flatpak_id": "com.google.Chrome",
+      "base_url": "https://www.xbox.com/play",
+      "games": {
+        "destiny2": {
+          "title": "Destiny 2",
+          "url": "https://www.xbox.com/play/games/destiny-2/BPK99T289069",
+          "anti_cheat": "BattlEye",
+          "anti_cheat_status": "Bypass/Ban-Immune (Xbox Cloud Azure Host)"
+        },
+        "fortnite": {
+          "title": "Fortnite",
+          "url": "https://www.xbox.com/play/games/fortnite/BT5P2X999VH2",
+          "anti_cheat": "EasyAntiCheat",
+          "anti_cheat_status": "Bypass/Ban-Immune (Xbox Cloud Azure Host)"
+        }
+      },
+      "kiosk_args": [
+        "--window-size=1024,640",
+        "--force-device-scale-factor=1.25",
+        "--device-scale-factor=1.25",
+        "--kiosk",
+        "--enable-features=VaapiVideoDecoder,VaapiVideoEncoder",
+        "--enable-gpu-rasterization",
+        "--no-first-run",
+        "--autoplay-policy=no-user-gesture-required"
+      ]
+    },
+    "boosteroid": {
+      "name": "Boosteroid Cloud Gaming",
+      "display_name": "Cloud Deck: Boosteroid",
+      "category": "Cloud Gaming",
+      "flatpak_id": "org.schelstraete.boosteroid",
+      "fallback_flatpak_id": "com.microsoft.Edge",
+      "base_url": "https://cloud.boosteroid.com",
+      "games": {
+        "destiny2": {
+          "title": "Destiny 2",
+          "url": "https://cloud.boosteroid.com/application/518",
+          "anti_cheat": "BattlEye",
+          "anti_cheat_status": "Bypass/Ban-Immune (Remote Windows Node)"
+        }
+      },
+      "kiosk_args": [
+        "--window-size=1280,800",
+        "--force-device-scale-factor=1.0",
+        "--device-scale-factor=1.0",
+        "--kiosk",
+        "--enable-features=VaapiVideoDecoder",
+        "--no-first-run"
+      ]
+    },
+    "shadow": {
+      "name": "Shadow PC",
+      "display_name": "Cloud Deck: Shadow PC",
+      "category": "Cloud Desktop",
+      "flatpak_id": "com.shadow.Shadow",
+      "fallback_flatpak_id": "com.microsoft.Edge",
+      "base_url": "https://pc.shadow.tech",
+      "games": {
+        "destiny2": {
+          "title": "Destiny 2",
+          "url": "https://pc.shadow.tech",
+          "anti_cheat": "BattlEye",
+          "anti_cheat_status": "Bypass/Ban-Immune (Full Dedicated Windows 10/11 VM)"
+        }
+      },
+      "kiosk_args": [
+        "--window-size=1280,800",
+        "--kiosk",
+        "--enable-features=VaapiVideoDecoder",
+        "--no-first-run"
+      ]
+    },
+    "moonlight": {
+      "name": "Moonlight Game Streaming",
+      "display_name": "Cloud Deck: Moonlight",
+      "category": "Local Streaming",
+      "flatpak_id": "com.moonlight_stream.Moonlight",
+      "fallback_flatpak_id": "",
+      "base_url": "",
+      "games": {
+        "destiny2": {
+          "title": "Destiny 2",
+          "url": "",
+          "anti_cheat": "BattlEye",
+          "anti_cheat_status": "Bypass/Ban-Immune (Home Windows PC via Sunshine)"
+        }
+      },
+      "kiosk_args": []
+    }
+  }
+}

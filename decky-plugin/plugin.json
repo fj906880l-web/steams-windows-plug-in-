@@ -1,0 +1,7 @@
+{
+  "name": "CloudDeck",
+  "author": "Antigravity",
+  "flags": [],
+  "description": "Direct Cloud Gaming integration for SteamOS Game Mode. Stream Destiny 2 and Windows games with zero anti-cheat ban risk.",
+  "version": "1.0.0"
+}

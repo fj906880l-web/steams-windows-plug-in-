@@ -1,0 +1,114 @@
+"controller_mappings"
+{
+	"version"		"3"
+	"game"		"CloudDeck Stream"
+	"title"		"CloudDeck Default Handheld & Gamepad"
+	"description"		"Optimized Steam Deck controller configuration for Cloud Gaming (GeForce NOW, Xbox Cloud, Boosteroid). Features dual-mode right trackpad mouse navigation with standard XInput controller bindings and grip shortcuts for overlay and keyboard."
+	"settings"
+	{
+		"left_trackpad_mode"		"dpad"
+		"right_trackpad_mode"		"mouse"
+		"gyro_mode"		"none"
+	}
+	"group"
+	{
+		"id"		"0"
+		"mode"		"four_buttons"
+		"bindings"
+		{
+			"button_a"		"xinput_button A"
+			"button_b"		"xinput_button B"
+			"button_x"		"xinput_button X"
+			"button_y"		"xinput_button Y"
+		}
+	}
+	"group"
+	{
+		"id"		"1"
+		"mode"		"dpad"
+		"bindings"
+		{
+			"dpad_north"		"xinput_button DPAD_UP"
+			"dpad_south"		"xinput_button DPAD_DOWN"
+			"dpad_east"		"xinput_button DPAD_RIGHT"
+			"dpad_west"		"xinput_button DPAD_LEFT"
+		}
+	}
+	"group"
+	{
+		"id"		"2"
+		"mode"		"joystick"
+		"bindings"
+		{
+			"click"		"xinput_button JOYSTICK_LEFT"
+		}
+	}
+	"group"
+	{
+		"id"		"3"
+		"mode"		"joystick"
+		"bindings"
+		{
+			"click"		"xinput_button JOYSTICK_RIGHT"
+		}
+	}
+	"group"
+	{
+		"id"		"4"
+		"mode"		"trigger"
+		"bindings"
+		{
+			"click"		"xinput_button TRIGGER_LEFT"
+		}
+	}
+	"group"
+	{
+		"id"		"5"
+		"mode"		"trigger"
+		"bindings"
+		{
+			"click"		"xinput_button TRIGGER_RIGHT"
+		}
+	}
+	"group"
+	{
+		"id"		"6"
+		"mode"		"mouse"
+		"bindings"
+		{
+			"click"		"mouse_button LEFT"
+			"doubletap"	"xinput_button A"
+		}
+	}
+	"actions"
+	{
+		"Default"
+		{
+			"title"		"Default In-Game"
+			"legacy_set"		"0"
+			"group_escapes"
+			{
+				"0"		"0"
+				"1"		"1"
+				"2"		"2"
+				"3"		"3"
+				"4"		"4"
+				"5"		"5"
+				"6"		"6"
+			}
+			"bindings"
+			{
+				"shoulder_left"		"xinput_button SHOULDER_LEFT"
+				"shoulder_right"	"xinput_button SHOULDER_RIGHT"
+				"select"		"xinput_button SELECT"
+				"start"			"xinput_button START"
+				"button_escape"		"key_press ESCAPE"
+				"button_menu"		"xinput_button START"
+				"grip_l4"		"key_press F11"
+				"grip_r4"		"key_press ENTER"
+				"grip_l5"		"key_press TAB"
+				"grip_r5"		"key_press ESC"
+			}
+		}
+	}
+}
