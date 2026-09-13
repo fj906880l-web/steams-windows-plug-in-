@@ -160,6 +160,12 @@ detect_hardware() {
         pci_vendor="$(lspci -nn | grep -iE 'vga|3d|display' || true)"
     fi
 
+    if [[ "$(uname -s)" == "Darwin" ]]; then
+        DETECTED_GPU="apple_silicon"
+        log "Hardware Detected: macOS / Apple Silicon (Metal VideoToolbox hardware acceleration enabled)."
+        return
+    fi
+
     if [[ "${pci_vendor}" =~ (0x1002|AMD|Advanced\ Micro) ]]; then
         # AMD APU (Steam Deck Van Gogh / Sephiroth) or Radeon Discrete GPU
         DETECTED_GPU="amd"
@@ -357,83 +363,114 @@ fi
 if [[ -z "${RUNNER}" ]]; then
     CHOSEN_FLATPAK=""
 
-    if [[ "${FORCE_BROWSER}" == "chrome" ]]; then
-        CHOSEN_FLATPAK="com.google.Chrome"
-    elif [[ "${FORCE_BROWSER}" == "edge" ]]; then
-        CHOSEN_FLATPAK="com.microsoft.Edge"
-    else
-        # Auto-detect: Prefer Edge (Valve official standard) then Chrome
-        if command -v flatpak &>/dev/null && flatpak info com.microsoft.Edge &>/dev/null; then
-            CHOSEN_FLATPAK="com.microsoft.Edge"
-        elif command -v flatpak &>/dev/null && flatpak info com.google.Chrome &>/dev/null; then
-            CHOSEN_FLATPAK="com.google.Chrome"
-        else
-            # Default to Edge for command construction
-            CHOSEN_FLATPAK="com.microsoft.Edge"
+    if [[ "$(uname -s)" == "Darwin" ]]; then
+        detect_resolution
+        DEVICE_SCALE="1.0"
+        if [[ "${WINDOW_WIDTH}" -ge 2560 ]]; then
+            DEVICE_SCALE="1.25"
         fi
-    fi
+        
+        if [[ "${FORCE_BROWSER}" == "chrome" ]] && [[ -d "/Applications/Google Chrome.app" ]]; then
+            RUNNER="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+        elif [[ -d "/Applications/Microsoft Edge.app" ]]; then
+            RUNNER="/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge"
+        elif [[ -d "/Applications/Google Chrome.app" ]]; then
+            RUNNER="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+        else
+            RUNNER="open"
+        fi
 
-    RUNNER="flatpak"
-    RUNNER_ARGS=(
-        "run"
-        "--branch=stable"
-        "--arch=x86_64"
-    )
-
-    if [[ "${CHOSEN_FLATPAK}" == "com.microsoft.Edge" ]]; then
-        RUNNER_ARGS+=("--command=msedge-stable" "com.microsoft.Edge")
+        if [[ "${RUNNER}" != "open" ]]; then
+            RUNNER_ARGS=(
+                "--kiosk"
+                "--window-size=${WINDOW_WIDTH},${WINDOW_HEIGHT}"
+                "--force-device-scale-factor=${DEVICE_SCALE}"
+                "--device-scale-factor=${DEVICE_SCALE}"
+                "--disable-background-timer-throttling"
+                "--disable-backgrounding-occluded-windows"
+                "--disable-renderer-backgrounding"
+                "--no-first-run"
+                "--autoplay-policy=no-user-gesture-required"
+                "--disable-frame-rate-limit"
+                "${TARGET_URL}"
+            )
+        else
+            RUNNER_ARGS=("${TARGET_URL}")
+        fi
     else
-        RUNNER_ARGS+=("--command=google-chrome-stable" "com.google.Chrome")
+        if [[ "${FORCE_BROWSER}" == "chrome" ]]; then
+            CHOSEN_FLATPAK="com.google.Chrome"
+        elif [[ "${FORCE_BROWSER}" == "edge" ]]; then
+            CHOSEN_FLATPAK="com.microsoft.Edge"
+        else
+            # Auto-detect: Prefer Edge (Valve official standard) then Chrome
+            if command -v flatpak &>/dev/null && flatpak info com.microsoft.Edge &>/dev/null; then
+                CHOSEN_FLATPAK="com.microsoft.Edge"
+            elif command -v flatpak &>/dev/null && flatpak info com.google.Chrome &>/dev/null; then
+                CHOSEN_FLATPAK="com.google.Chrome"
+            else
+                # Default to Edge for command construction
+                CHOSEN_FLATPAK="com.microsoft.Edge"
+            fi
+        fi
+
+        RUNNER="flatpak"
+        RUNNER_ARGS=(
+            "run"
+            "--branch=stable"
+            "--arch=x86_64"
+        )
+
+        if [[ "${CHOSEN_FLATPAK}" == "com.microsoft.Edge" ]]; then
+            RUNNER_ARGS+=("--command=msedge-stable" "com.microsoft.Edge")
+        else
+            RUNNER_ARGS+=("--command=google-chrome-stable" "com.google.Chrome")
+        fi
+
+        # Detect current resolution dynamically for PC / Handheld
+        detect_resolution
+
+        # Display scaling and resolution based on display and service
+        DEVICE_SCALE="1.0"
+        if [[ "${WINDOW_WIDTH}" -ge 3840 ]]; then
+            DEVICE_SCALE="2.0"
+        elif [[ "${WINDOW_WIDTH}" -ge 2560 ]]; then
+            DEVICE_SCALE="1.25"
+        elif [[ "${SERVICE}" == "xbox" && "${WINDOW_WIDTH}" -le 1280 ]]; then
+            # Handheld Xbox Cloud recommendation: 1024x640 with 1.25 scale
+            WINDOW_WIDTH=1024
+            WINDOW_HEIGHT=640
+            DEVICE_SCALE="1.25"
+        fi
+
+        RUNNER_ARGS+=(
+            "--window-size=${WINDOW_WIDTH},${WINDOW_HEIGHT}"
+            "--force-device-scale-factor=${DEVICE_SCALE}"
+            "--device-scale-factor=${DEVICE_SCALE}"
+        )
+
+        # Low-latency, Zero-Stutter Performance Flags
+        RUNNER_ARGS+=(
+            "--kiosk"
+            "--enable-features=VaapiVideoDecoder,VaapiVideoEncoder,CanvasOopRasterization"
+            "--enable-gpu-rasterization"
+            "--enable-zero-copy"
+            "--ignore-gpu-blocklist"
+            "--disable-gpu-driver-bug-workarounds"
+            "--disable-background-timer-throttling"
+            "--disable-backgrounding-occluded-windows"
+            "--disable-renderer-backgrounding"
+            "--disable-features=CalculateNativeWinOcclusion"
+            "--enable-webrtc-pipewire-capturer"
+            "--use-gl=egl"
+            "--enable-accelerated-video-decode"
+            "--enable-accelerated-mjpeg-decode"
+            "--no-first-run"
+            "--autoplay-policy=no-user-gesture-required"
+            "--disable-frame-rate-limit"
+            "${TARGET_URL}"
+        )
     fi
-
-    # Detect current resolution dynamically for PC / Handheld
-    detect_resolution
-
-    # Display scaling and resolution based on display and service
-    DEVICE_SCALE="1.0"
-    if [[ "${WINDOW_WIDTH}" -ge 3840 ]]; then
-        DEVICE_SCALE="2.0"
-    elif [[ "${WINDOW_WIDTH}" -ge 2560 ]]; then
-        DEVICE_SCALE="1.25"
-    elif [[ "${SERVICE}" == "xbox" && "${WINDOW_WIDTH}" -le 1280 ]]; then
-        # Handheld Xbox Cloud recommendation: 1024x640 with 1.25 scale
-        WINDOW_WIDTH=1024
-        WINDOW_HEIGHT=640
-        DEVICE_SCALE="1.25"
-    fi
-
-    RUNNER_ARGS+=(
-        "--window-size=${WINDOW_WIDTH},${WINDOW_HEIGHT}"
-        "--force-device-scale-factor=${DEVICE_SCALE}"
-        "--device-scale-factor=${DEVICE_SCALE}"
-    )
-
-    # Low-latency, Zero-Stutter Performance Flags
-    RUNNER_ARGS+=(
-        "--kiosk"
-        "--enable-features=VaapiVideoDecoder,VaapiVideoEncoder,CanvasOopRasterization"
-        "--enable-gpu-rasterization"
-        "--enable-zero-copy"
-        "--ignore-gpu-blocklist"
-        "--disable-gpu-driver-bug-workarounds"
-        "--disable-background-timer-throttling"
-        "--disable-backgrounding-occluded-windows"
-        "--disable-renderer-backgrounding"
-        "--disable-features=CalculateNativeWinOcclusion"
-        "--enable-webrtc-pipewire-capturer"
-        "--use-gl=egl"
-        "--enable-accelerated-video-decode"
-        "--enable-accelerated-mjpeg-decode"
-        "--no-first-run"
-        "--autoplay-policy=no-user-gesture-required"
-        "--disable-frame-rate-limit"
-    )
-
-    if [[ -n "${FORCE_CODEC}" ]]; then
-        log "Forcing codec preference: ${FORCE_CODEC}"
-    fi
-
-    RUNNER_ARGS+=("${TARGET_URL}")
 fi
 
 # ------------------------------------------------------------------------------

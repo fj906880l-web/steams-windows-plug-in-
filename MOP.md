@@ -37,7 +37,7 @@ ls -la ~/.local/share/Steam/userdata/ || ls -la ~/.steam/steam/userdata/
 ### 2.1 Environmental Matrix
 
 | Parameter | Required Specification | Verification Command |
-|---|---|---|
+| --- | --- | --- |
 | **OS** | SteamOS 3.4+ / Bazzite / ChimeraOS / HoloISO / Generic Linux PC | `cat /etc/os-release` |
 | **GPU / APU** | AMD Radeon (radeonsi) / Intel Arc & Xe (iHD) / NVIDIA RTX/GTX (NVDEC) | `lspci -nn \| grep -iE "vga\|3d"` |
 | **Display** | Handheld (1280x800) / PC Monitors (1080p, 1440p, 4K, 60-240Hz) | `xrandr --current \| grep "\*"` |
@@ -54,9 +54,11 @@ ls -la ~/.local/share/Steam/userdata/ || ls -la ~/.steam/steam/userdata/
    * Press the physical **STEAM** button.
    * Navigate to **Power** → **Switch to Desktop**.
 2. Download or clone this repository into `~/steams-windows-plug-in-`:
+
    ```bash
    git clone https://github.com/fj906880l-web/steams-windows-plug-in-.git ~/steams-windows-plug-in-
    ```
+
 3. Open **Dolphin** (file manager), navigate to `~/steams-windows-plug-in-`, and double-click:
    `CloudDeck-Installer.desktop`
 4. Click **Launch** when prompted by KDE Plasma.
@@ -76,6 +78,11 @@ cd ~/steams-windows-plug-in-
 bash install.sh
 ```
 
+### 3.3 Procedure C: Windows & macOS Installation
+
+* **Windows**: Run `install.bat` (or in PowerShell: `powershell -ExecutionPolicy Bypass -File install.ps1`). Injects shortcuts into your Windows Steam client and deploys artwork.
+* **macOS**: Run `./install-macos.sh` in Terminal. Injects shortcuts into `~/Library/Application Support/Steam` and configures Apple Silicon hardware decoding.
+
 ---
 
 ## 4. Steam Input & Game Mode Configuration
@@ -87,7 +94,7 @@ CloudDeck deploys an optimized **Neptune Steam Input profile** automatically.
 ### 4.1 Controller Action Mapping
 
 | Hardware Control | Default Mode (In-Game Combat) | Browser / Menu Navigation |
-|---|---|---|
+| --- | --- | --- |
 | **Right Trackpad** | Mouse Cursor Navigation | Mouse Cursor Navigation |
 | **Right Trackpad Click** | Left Mouse Click | Left Mouse Click |
 | **Left Stick** | Standard Gamepad Analog Movement | Mouse Scroll |
@@ -107,6 +114,7 @@ CloudDeck deploys an optimized **Neptune Steam Input profile** automatically.
 When Decky Loader is installed, CloudDeck appears as a dedicated tab in the Quick Access Menu (three-dot button `...` on the right side of the Steam Deck).
 
 ### 5.1 QAM Features
+
 * **Destiny 2 Quick-Play**: One-tap direct launch into Destiny 2 on GeForce NOW, Xbox Cloud, or Boosteroid.
 * **Live Datacenter Ping**: Real-time round-trip latency measurements to cloud nodes.
 * **Codec & Resolution Toggles**: Switch between H.264 (universal compatibility) and HEVC H.265 (sharper visuals, lower bandwidth).
@@ -139,18 +147,22 @@ Problem: Cloud Stream / Destiny 2 Launch Failure
 ### 6.2 Common Issues & Resolutions
 
 #### Issue 1: Gamepad controls do not respond inside the cloud game
+
 * **Root Cause**: The Flatpak sandbox prevents the browser from reading physical HID controller devices located at `/run/udev`.
 * **Resolution**: Execute the following command in Konsole:
+
   ```bash
   flatpak --user override --filesystem=/run/udev:ro com.microsoft.Edge
   flatpak --user override --filesystem=/run/udev:ro com.google.Chrome
   ```
 
 #### Issue 2: Destiny 2 launches into browser home page instead of game
+
 * **Root Cause**: GeForce NOW or Xbox Cloud requires a one-time session login.
 * **Resolution**: Use the right trackpad as a mouse to log into your NVIDIA/Xbox account once. The session cookie is saved in the Flatpak sandbox. Subsequent launches will deep-link directly into Destiny 2.
 
 #### Issue 3: Non-Steam shortcuts do not appear in Gaming Mode
+
 * **Root Cause**: Steam only parses `shortcuts.vdf` on startup. If Steam was running in Desktop Mode when the script was executed, changes are queued until reload.
 * **Resolution**: Restart Steam or return to Gaming Mode (which initiates a fresh Steam session).
 

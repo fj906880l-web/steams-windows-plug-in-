@@ -17,14 +17,26 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import vdf
 
 
+import platform
+
+# Cross-platform Steam installation directories
 STEAM_ROOT_CANDIDATES = [
+    # Linux & SteamOS
     os.path.expanduser("~/.local/share/Steam"),
     os.path.expanduser("~/.steam/steam"),
     os.path.expanduser("~/.var/app/com.valvesoftware.Steam/data/Steam"),
+    # macOS
+    os.path.expanduser("~/Library/Application Support/Steam"),
+    # Windows
+    os.path.join(os.environ.get("ProgramFiles(x86)", r"C:\Program Files (x86)"), "Steam"),
+    os.path.join(os.environ.get("ProgramFiles", r"C:\Program Files"), "Steam"),
+    os.path.join(os.environ.get("LOCALAPPDATA", ""), "Steam"),
 ]
 
-
-DEFAULT_LAUNCHER_PATH = os.path.expanduser("~/.local/bin/cloud-launcher.sh")
+if platform.system() == "Windows":
+    DEFAULT_LAUNCHER_PATH = os.path.expanduser(r"~/.local/bin/cloud-launcher.bat")
+else:
+    DEFAULT_LAUNCHER_PATH = os.path.expanduser("~/.local/bin/cloud-launcher.sh")
 
 
 ENTRIES_TO_INSTALL = [
