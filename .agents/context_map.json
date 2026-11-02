@@ -1,0 +1,147 @@
+{
+  "schema_version": "2.0.0",
+  "protocol": "IBM-Context-Aware-Coding-x-Gemini-Antigravity",
+  "generated_at": "2026-11-02T19:16:38Z",
+  "repo_map": {
+    "project_name": "steams-windows-plug-in-",
+    "project_root": "/Users/malcolm/steams-windows-plug-in-",
+    "task_filter": "general",
+    "total_code_files": 12,
+    "mapped_code_files": 12,
+    "excluded_noise_items": 34,
+    "entry_points": [
+      "decky-plugin/main.py"
+    ],
+    "config_files": [
+      "GEMINI.md",
+      "WORKFLOWS_AND_SKILLS.md",
+      "decky-plugin/package.json"
+    ],
+    "test_files": [
+      "tests/sandbox_verify.sh",
+      "tests/test_launcher.sh",
+      "tests/test_vdf_injector.py"
+    ],
+    "modules": [
+      {
+        "path": "assets/generate_artwork.py",
+        "symbols": [
+          "def make_png()",
+          "def save_png()",
+          "def make_gradient_pattern()",
+          "def make_logo_pattern()",
+          "def generate_all()"
+        ],
+        "relevance_score": 1
+      },
+      {
+        "path": "bin/cloud-launcher.sh",
+        "symbols": [],
+        "relevance_score": 1
+      },
+      {
+        "path": "decky-plugin/main.py",
+        "symbols": [
+          "class Plugin [launch_service, ping_datacenters, sync_steam_shortcuts, get_anticheat_info]"
+        ],
+        "relevance_score": 1
+      },
+      {
+        "path": "decky-plugin/src/declarations.d.ts",
+        "symbols": [
+          "fn useState",
+          "fn useEffect",
+          "fn definePlugin",
+          "interface VFC",
+          "interface FC",
+          "interface ServerAPI"
+        ],
+        "relevance_score": 1
+      },
+      {
+        "path": "decky-plugin/src/index.tsx",
+        "symbols": [],
+        "relevance_score": 1
+      },
+      {
+        "path": "install-macos.sh",
+        "symbols": [],
+        "relevance_score": 1
+      },
+      {
+        "path": "install.sh",
+        "symbols": [],
+        "relevance_score": 1
+      },
+      {
+        "path": "lib/steam_shortcuts_manager.py",
+        "symbols": [
+          "def find_steam_userdata_dirs()",
+          "def ensure_shortcuts_vdf()",
+          "def inject_shortcuts()",
+          "def install_artwork()",
+          "def install_controller_configs()",
+          "def main()"
+        ],
+        "relevance_score": 1
+      },
+      {
+        "path": "lib/vdf.py",
+        "symbols": [
+          "def read_cstring()",
+          "def binary_loads()",
+          "def binary_dumps()",
+          "def generate_steam_appid()",
+          "def signed_appid()",
+          "def dumps_text()"
+        ],
+        "relevance_score": 1
+      },
+      {
+        "path": "tests/sandbox_verify.sh",
+        "symbols": [],
+        "relevance_score": 1
+      },
+      {
+        "path": "tests/test_launcher.sh",
+        "symbols": [],
+        "relevance_score": 1
+      },
+      {
+        "path": "tests/test_vdf_injector.py",
+        "symbols": [
+          "class TestVDF [test_roundtrip_simple_binary, test_appid_calculation, test_shortcuts_injection_and_idempotency, test_artwork_installation]"
+        ],
+        "relevance_score": 1
+      }
+    ]
+  },
+  "lockfile_dependencies": {
+    "project_name": "steams-windows-plug-in-",
+    "sources_detected": [],
+    "dependency_count": 0,
+    "resolved_dependencies": {}
+  },
+  "test_feedback_loop": {
+    "project_name": "steams-windows-plug-in-",
+    "primary_verification_command": "bash install-macos.sh --dry-run || pytest tests/ -v",
+    "scoped_test_command": "bash install-macos.sh --dry-run || pytest tests/ -v",
+    "matched_test_files": [
+      "tests/sandbox_verify.sh",
+      "tests/test_launcher.sh",
+      "tests/test_vdf_injector.py"
+    ],
+    "harness_verify_present": false
+  },
+  "gemini_conventions": {
+    "project_name": "steams-windows-plug-in-",
+    "gemini_md_present": true,
+    "domain_rules": [
+      "* **Process Isolation:** Win32/C++ inter-process bridge calls must handle timeouts and unexpected termination gracefully.",
+      "* **Non-Blocking I/O:** Socket communication with Decky loader must be asynchronous.",
+      "* **Zero Elevated Privilege Escalation:** Run with lowest viable process permissions."
+    ],
+    "learned_conventions": [],
+    "zero_claude_residue_verified": true
+  }
+}

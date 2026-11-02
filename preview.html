@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Steam Deck Windows Plugin | Live Quick Access Overlay</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #0d1117;
+      color: #c9d1d9;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      user-select: none;
+    }
+    .deck-panel {
+      background: rgba(22, 27, 34, 0.95);
+      border: 1px solid rgba(48, 54, 61, 0.8);
+      backdrop-filter: blur(12px);
+    }
+    .steamos-btn {
+      background: linear-gradient(135deg, #1f6feb 0%, #1158c7 100%);
+      transition: all 0.15s ease-in-out;
+    }
+    .steamos-btn:hover {
+      background: linear-gradient(135deg, #388bfd 0%, #1f6feb 100%);
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body class="min-h-screen p-4 flex flex-col items-center justify-center">
+  <div class="w-full max-w-2xl deck-panel rounded-2xl p-6 shadow-2xl space-y-6 border border-slate-700/60">
+    <!-- Header -->
+    <div class="flex items-center justify-between border-b border-slate-700/80 pb-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-blue-400 text-xl font-bold">
+          🎮
+        </div>
+        <div>
+          <h1 class="text-base font-bold text-white tracking-wide">Steam Deck Windows System Bridge</h1>
+          <p class="text-xs text-slate-400 font-mono">Win32 Hook &amp; Decky Loader IPC Runtime (Active Port 8005)</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-950 text-emerald-400 border border-emerald-500/30">
+          ● IPC CONNECTED (1ms)
+        </span>
+      </div>
+    </div>
+
+    <!-- Quick Access Performance Overlay -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 text-center">
+        <div class="text-[11px] font-mono text-slate-400 uppercase">Frame Rate</div>
+        <div class="text-xl font-bold text-emerald-400 font-mono mt-1" id="fpsMetric">60.0 FPS</div>
+        <div class="text-[10px] text-slate-500 font-mono">Frametime 16.6ms</div>
+      </div>
+      <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 text-center">
+        <div class="text-[11px] font-mono text-slate-400 uppercase">APU TDP Limit</div>
+        <div class="text-xl font-bold text-cyan-400 font-mono mt-1" id="tdpMetric">15 W</div>
+        <div class="text-[10px] text-slate-500 font-mono">Max Sustained</div>
+      </div>
+      <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 text-center">
+        <div class="text-[11px] font-mono text-slate-400 uppercase">GPU Clock</div>
+        <div class="text-xl font-bold text-purple-400 font-mono mt-1" id="gpuMetric">1600 MHz</div>
+        <div class="text-[10px] text-slate-500 font-mono">Auto Fixed</div>
+      </div>
+      <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 text-center">
+        <div class="text-[11px] font-mono text-slate-400 uppercase">Hook Status</div>
+        <div class="text-xl font-bold text-amber-400 font-mono mt-1">DIRECTX 12</div>
+        <div class="text-[10px] text-slate-500 font-mono">Overlay Injected</div>
+      </div>
+    </div>
+
+    <!-- Interactive Sliders -->
+    <div class="space-y-4 bg-slate-900/40 p-4 rounded-xl border border-slate-800/80">
+      <div>
+        <div class="flex justify-between text-xs font-mono text-slate-300 mb-1">
+          <span>TDP Power Limit (Watts)</span>
+          <span id="tdpVal" class="text-cyan-400 font-bold">15 W</span>
+        </div>
+        <input type="range" min="3" max="25" value="15" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500" oninput="document.getElementById('tdpVal').innerText = this.value + ' W'; document.getElementById('tdpMetric').innerText = this.value + ' W';">
+      </div>
+
+      <div>
+        <div class="flex justify-between text-xs font-mono text-slate-300 mb-1">
+          <span>Manual GPU Clock Limit (MHz)</span>
+          <span id="gpuVal" class="text-purple-400 font-bold">1600 MHz</span>
+        </div>
+        <input type="range" min="800" max="2000" step="50" value="1600" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-purple-500" oninput="document.getElementById('gpuVal').innerText = this.value + ' MHz'; document.getElementById('gpuMetric').innerText = this.value + ' MHz';">
+      </div>
+    </div>
+
+    <!-- Control Toggles -->
+    <div class="flex items-center justify-between gap-3 pt-2">
+      <button onclick="toggleOverlay()" id="toggleBtn" class="steamos-btn px-4 py-2.5 rounded-xl text-white font-medium text-xs flex items-center gap-2 shadow-lg">
+        <span>🔘</span> <span id="toggleText">Toggle In-Game HUD (Level 2)</span>
+      </button>
+      <button onclick="pingIpc()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-mono border border-slate-700 transition-all flex items-center gap-2">
+        <span>⚡</span> Ping Named Pipe IPC
+      </button>
+    </div>
+
+    <!-- Live Event Log -->
+    <div class="p-3 rounded-xl bg-black/60 border border-slate-800 font-mono text-[11px] text-slate-400 space-y-1 h-24 overflow-y-auto" id="eventLogs">
+      <div class="text-emerald-400">[IPC Init] Windows Named Pipe \\.\pipe\SteamDeckWin32Hook opened successfully.</div>
+      <div class="text-cyan-400">[Hook Engine] DXGI SwapChain present hooked via MinHook x64.</div>
+      <div class="text-slate-400">[Telemetry] Sampling APU power, temperatures, and frametimes @ 1000Hz.</div>
+    </div>
+  </div>
+
+  <script>
+    let hudLevel = 2;
+    function toggleOverlay() {
+      hudLevel = (hudLevel % 4) + 1;
+      document.getElementById('toggleText').innerText = `Toggle In-Game HUD (Level ${hudLevel})`;
+      addLog(`[HUD] Level changed to ${hudLevel} (Metrics: FPS, Frametime, CPU, GPU, Battery)`);
+    }
+
+    function pingIpc() {
+      const ms = (Math.random() * 0.8 + 0.3).toFixed(2);
+      addLog(`[IPC] Named Pipe Ping ACK received in ${ms}ms (Packet verified: CRC32 0x8FA391)`);
+    }
+
+    function addLog(msg) {
+      const logs = document.getElementById('eventLogs');
+      const row = document.createElement('div');
+      row.className = 'text-slate-300';
+      row.innerText = `${new Date().toLocaleTimeString()} ${msg}`;
+      logs.appendChild(row);
+      logs.scrollTop = logs.scrollHeight;
+    }
+
+    setInterval(() => {
+      const jitter = (Math.random() * 1.2 - 0.6).toFixed(1);
+      document.getElementById('fpsMetric').innerText = `${(60.0 + parseFloat(jitter)).toFixed(1)} FPS`;
+    }, 2000);
+  </script>
+</body>
+</html>

@@ -4,6 +4,7 @@ decky-plugin/main.py - Python Backend for CloudDeck Decky Loader Plugin.
 Executes service launches, network latency measurements, and shortcuts synchronization.
 """
 
+import asyncio
 import os
 import sys
 import subprocess
@@ -30,6 +31,15 @@ class Plugin:
 
     async def launch_service(self, service="gfn", game="", codec="auto", resolution="800p"):
         """Launch a cloud gaming service or specific game."""
+        if not os.path.isfile(self.launcher_path):
+            return {"status": "error", "error": f"Launcher script not found at {self.launcher_path}"}
+
+        if not os.access(self.launcher_path, os.X_OK):
+            try:
+                os.chmod(self.launcher_path, os.stat(self.launcher_path).st_mode | 0o755)
+            except Exception as e:
+                return {"status": "error", "error": f"Failed to ensure execute permissions on {self.launcher_path}: {e}"}
+
         cmd = [self.launcher_path, "--service", service]
         if game:
             cmd.extend(["--game", game])
@@ -55,24 +65,33 @@ class Plugin:
             return {"status": "error", "error": str(e)}
 
     async def ping_datacenters(self):
-        """Measure round-trip network latency to cloud gaming endpoints."""
+        """Measure round-trip network latency to cloud gaming endpoints concurrently."""
         endpoints = {
             "gfn": ("play.geforcenow.com", 443),
             "xbox": ("www.xbox.com", 443),
             "boosteroid": ("cloud.boosteroid.com", 443)
         }
 
-        results = {}
-        for key, (host, port) in endpoints.items():
+        async def _measure_one(host: str, port: int) -> str:
             try:
                 start = time.perf_counter()
-                s = socket.create_connection((host, port), timeout=2.0)
-                s.close()
+                reader, writer = await asyncio.wait_for(
+                    asyncio.open_connection(host, port),
+                    timeout=2.0
+                )
+                writer.close()
+                await writer.wait_closed()
                 elapsed = (time.perf_counter() - start) * 1000.0
-                results[key] = f"{int(elapsed)} ms"
+                return f"{int(elapsed)} ms"
             except Exception:
-                results[key] = "Timeout"
+                return "Timeout"
 
+        keys = list(endpoints.keys())
+        tasks = [_measure_one(endpoints[k][0], endpoints[k][1]) for k in keys]
+        raw_results = await asyncio.gather(*tasks, return_exceptions=True)
+        results = {}
+        for k, res in zip(keys, raw_results):
+            results[k] = res if isinstance(res, str) else "Timeout"
         return results
 
     async def sync_steam_shortcuts(self):
@@ -89,9 +108,12 @@ class Plugin:
                 [sys.executable, script, "--launcher-exe", self.launcher_path],
                 capture_output=True,
                 text=True,
-                check=True
+                check=True,
+                timeout=30
             )
             return {"status": "ok", "output": res.stdout}
+        except subprocess.TimeoutExpired:
+            return {"status": "error", "error": "Steam shortcuts sync timed out after 30 seconds"}
         except subprocess.CalledProcessError as e:
             return {"status": "error", "error": e.stderr or str(e)}
 
